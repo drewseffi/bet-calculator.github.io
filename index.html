@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bet Calculator</title>
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+    <div class="bet-types-container">
+        <div class="bet-type">Single</div>
+        <div class="bet-type">Double</div>
+        <div class="bet-type">Treble</div>
+        <div class="bet-type">Trixie</div>
+        <div class="bet-type">Patent</div>
+        <div class="bet-type">Lucky 15/31/63</div>
+        <div class="bet-type">Yankee</div>
+        <div class="bet-type">Canadian</div>
+        <div class="bet-type">Heinz</div>
+        <div class="bet-type">Super Heinz</div>
+        <div class="bet-type">Goliath</div>
+        <div class="bet-type">Alphabet</div>
+        <div class="bet-type">Fivespot/Pontoon/Magnificent 7</div>
+    </div>
+
+    <div class="bet-details">
+        <div>
+            <label for="selections">Number of selections:</label>
+            <input name="selections" min="1" max="15" type="number" value="1" id="numOfSelections"/>
+        </div>
+        <div class="selection-details">
+            <input class="odds" min="1" type="number"/>
+            /
+            <input class="odds" min="1" type="number"/>
+        </div>
+    </div>
+</body>
+</html>
