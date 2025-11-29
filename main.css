@@ -21,7 +21,14 @@ body {
   justify-content: center;
   align-items: center;
   transition: transform .2s;
+}
+
+.red {
   background: linear-gradient(to top, #ff1f1f, #ff4d4d);
+}
+
+.grey {
+  background: linear-gradient(to top, #666666, #9b9b9b);
 }
 
 .bet-type:hover {
@@ -33,14 +40,71 @@ body {
     flex-direction: column;
     align-items: center;
     margin: auto;
+    row-gap: 10px;
 }
 
 .selection-details {
-    width: 400px;
-    background-color: green;
+    width: 130px;
+    background-color: rgb(180, 180, 180);
     display: flex;
+    height: 35px;
+    align-items: center;
+    padding: 5px;
+    justify-content: center;
+    column-gap: 5px;
+    border-radius: 6px;
+    box-sizing: border-box;
 }
 
 .odds {
     width: 40px;
+    height: 25px;
+    border: none;
+    border-radius: 6px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.delete-button {
+  background-color: #e74c3c;
+  color: #fff;               
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+  text-align: center;
+  height: 25px;
+  width: 25px;
+  box-sizing: border-box;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
+
+.add-button {
+    width: 130px;
+    background-color: rgb(180, 180, 180);
+    display: flex;
+    height: 25px;
+    align-items: center;
+    padding: 5px;
+    justify-content: center;
+    column-gap: 5px;
+    border-radius: 6px;
+    border: none;
+    box-sizing: border-box;
+    transition: background 0.15s;
+}
+
+.add-button:hover {
+  background-color: rgb(145, 145, 145);
 }

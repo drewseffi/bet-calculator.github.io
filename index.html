@@ -6,33 +6,45 @@
   <title>Bet Calculator</title>
   <link rel="stylesheet" href="main.css" />
 </head>
-<body>
+<body onload="valueChange(), load()">
+
+    <template id="template">
+        <div class="selection-details">
+            <input class="odds" value="1" onchange="sanitize(this)">
+            <p>/</p>
+            <input class="odds" value="1" onchange="sanitize(this)">
+            <button type="button" class="delete-button" onclick="removeSelection(this), updateBoxes()">X</button>
+        </div>
+    </template>
+
     <div class="bet-types-container">
-        <div class="bet-type">Single</div>
-        <div class="bet-type">Double</div>
-        <div class="bet-type">Treble</div>
-        <div class="bet-type">Trixie</div>
-        <div class="bet-type">Patent</div>
-        <div class="bet-type">Lucky 15/31/63</div>
-        <div class="bet-type">Yankee</div>
-        <div class="bet-type">Canadian</div>
-        <div class="bet-type">Heinz</div>
-        <div class="bet-type">Super Heinz</div>
-        <div class="bet-type">Goliath</div>
-        <div class="bet-type">Alphabet</div>
-        <div class="bet-type">Fivespot/Pontoon/Magnificent 7</div>
+        <div class="bet-type" id="single" data-min="1" data-max="15">Single</div>
+        <div class="bet-type" id="double" data-min="2" data-max="15">Double</div>
+        <div class="bet-type" id="treble" data-min="3" data-max="15">Treble</div>
+        <div class="bet-type" id="trixie" data-min="3" data-max="15">Trixie</div>
+        <div class="bet-type" id="patent" data-min="3" data-max="3">Patent</div>
+        <div class="bet-type" id="lucky" data-min="4" data-max="6">Lucky 15/31/63</div>
+        <div class="bet-type" id="yankee" data-min="1">Yankee</div>
+        <div class="bet-type" id="canadian" data-min="1">Canadian</div>
+        <div class="bet-type" id="heinz" data-min="1">Heinz</div>
+        <div class="bet-type" id="super-heinz" data-min="1">Super Heinz</div>
+        <div class="bet-type" id="goliath" data-min="1">Goliath</div>
+        <div class="bet-type" id="alphabet" data-min="1">Alphabet</div>
+        <div class="bet-type" id="fivespot" data-min="1">Fivespot/Pontoon/Magnificent 7</div>
     </div>
 
-    <div class="bet-details">
-        <div>
-            <label for="selections">Number of selections:</label>
-            <input name="selections" min="1" max="15" type="number" value="1" id="numOfSelections"/>
-        </div>
-        <div class="selection-details">
-            <input class="odds" min="1" type="number"/>
-            /
-            <input class="odds" min="1" type="number"/>
-        </div>
+    <div class="title">
+        <label for="selections">Number of selections:</label>
+        <input name="selections" min="1" max="15" value="1" id="numOfSelections" readonly onchange="sanitize(this), valueChange()" style="width: 25px"/>
     </div>
+
+    <div class="bet-details" id="dynamic">
+    </div>
+
+    <div class="title">
+        <button type="button" id="addSelection" class="add-button" onclick="addSelection(), updateBoxes()">Add selection</button>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
