@@ -10,9 +10,9 @@
 
     <template id="template">
         <div class="selection-details">
-            <input class="odds" value="1" onchange="sanitize(this)">
+            <input class="odds" value="1" onchange="sanitize(this, 1)">
             <p>/</p>
-            <input class="odds" value="1" onchange="sanitize(this)">
+            <input class="odds" value="1" onchange="sanitize(this, 1)">
             <button type="button" class="delete-button" onclick="removeSelection(this), updateBoxes()">X</button>
         </div>
     </template>
@@ -23,7 +23,9 @@
         <div class="bet-type" id="treble" data-min="3" data-max="15">Treble</div>
         <div class="bet-type" id="trixie" data-min="3" data-max="15">Trixie</div>
         <div class="bet-type" id="patent" data-min="3" data-max="3">Patent</div>
-        <div class="bet-type" id="lucky" data-min="4" data-max="6">Lucky 15/31/63</div>
+        <div class="bet-type" id="lucky15" data-min="4" data-max="4">Lucky 15</div>
+        <div class="bet-type" id="lucky31" data-min="5" data-max="5">Lucky 31</div>
+        <div class="bet-type" id="lucky63" data-min="6" data-max="6">Lucky 36</div>
         <div class="bet-type" id="yankee" data-min="1">Yankee</div>
         <div class="bet-type" id="canadian" data-min="1">Canadian</div>
         <div class="bet-type" id="heinz" data-min="1">Heinz</div>
@@ -33,16 +35,47 @@
         <div class="bet-type" id="fivespot" data-min="1">Fivespot/Pontoon/Magnificent 7</div>
     </div>
 
-    <div class="title">
-        <label for="selections">Number of selections:</label>
-        <input name="selections" min="1" max="15" value="1" id="numOfSelections" readonly onchange="sanitize(this), valueChange()" style="width: 25px"/>
-    </div>
+    <div class="main-container">
+        <div class="main-left">
+            <div class="title">
+                <label for="selections">Number of selections:</label>
+                <input name="selections" min="1" max="15" value="1" id="numOfSelections" readonly onchange="sanitize(this, 1), valueChange()" style="width: 25px"/>
+            </div>
 
-    <div class="bet-details" id="dynamic">
-    </div>
+            <div class="bet-details" id="dynamic">
+            </div>
 
-    <div class="title">
-        <button type="button" id="addSelection" class="add-button" onclick="addSelection(), updateBoxes()">Add selection</button>
+            <div class="title">
+                <button type="button" id="addSelection" class="add-button" onclick="addSelection(), updateBoxes()">Add selection</button>
+            </div>
+        </div>
+
+        <div class="main-right">
+            <p class="title-no-center">Bet Options:</p>
+            <div>
+                <label for="unit-stake">Unit stake:</label>
+                <input name="unit-stake" value="1" id="unitStake" onchange="sanitize(this, 2)" style="width: 45px"/>
+            </div>
+            <div style="display: flex; column-gap: 10px;">
+                <p style="margin: 0">Each-way:</p>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <p class="title-no-center">Bet Breakdown:</p>
+            <div id="bet-breakdown">
+                <p style="margin: 0">Test textTest textTest textTest textTest text</p>
+                <p style="margin: 0">Test textTest textTest textTest textTest text</p>
+                <p style="margin: 0">Test textTest textTest textTest textTest text</p>
+                <p style="margin: 0">Test textTest textTest textTest textTest text</p>
+                <p style="margin: 0">Test textTest textTest textTest textTest text</p>
+                <p style="margin: 0">Test textTest textTest textTest textTest text</p>
+                <p style="margin: 0">Test textTest textTest textTest textTest text</p>
+                <p style="margin: 0">Test textTest textTest textTest textTest text</p>
+            </div>
+            <button type="button" id="calcButton" class="calculate-button">Calculate</button>
+        </div>
     </div>
 
     <script src="app.js"></script>

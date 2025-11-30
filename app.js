@@ -14,11 +14,25 @@ function valueChange()
     document.getElementById('dynamic').appendChild(clone);
 }
 
-function sanitize(field) 
+function sanitize(field, type) 
 {
-    if (parseInt(field.value) < 1 || isNaN(parseInt(field.value)) || field.value == "")
+    if (type == 1)
     {
-        field.value = 1;
+        if (parseInt(field.value) < 1 || isNaN(parseInt(field.value)) || field.value == "")
+        {
+            field.value = 1;
+        }
+        if (field.value % 1 !== 0)
+        {
+            field.value = 1;
+        }
+    }
+    else if (type == 2)
+    {
+        if (parseInt(field.value) < 0 || isNaN(parseInt(field.value)) || field.value == "")
+        {
+            field.value = 0;
+        }
     }
 }
 
@@ -64,3 +78,10 @@ function removeSelection(button)
         button.parentElement.remove();
     }
 }
+
+document.querySelectorAll('.bet-type').forEach(btn => {
+    btn.addEventListener('click', () => {
+        btn.classList.toggle('selected');  // ← allows multi-select
+        console.log("Toggled:", btn.id, "Selected:", btn.classList.contains("selected"));
+    });
+});
