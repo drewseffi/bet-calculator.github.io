@@ -137,32 +137,35 @@ function singleBet(i)
 
 function calculate()
 {
-    let total = 0;
-    topInput = [];
-    bottomInput = [];
-    getAllOdds();
-
-    if (contains(selectedBets, 'single'))
+    if (selectedBets.length > 0)
     {
-        const num = Number(numSelections.value);
+        let total = 0;
+        topInput = [];
+        bottomInput = [];
+        getAllOdds();
 
-        for (let i = 0; i < num; i++)
+        if (contains(selectedBets, 'single'))
         {
-            total += singleBet(i);
+            const num = Number(numSelections.value);
+
+            for (let i = 0; i < num; i++)
+            {
+                total += singleBet(i);
+            }
+
+
         }
 
+        var returnText = document.getElementById('totalReturns');
+        var profitText = document.getElementById('totalProfit');
 
+        returnText.textContent = "Total returns: " + total;
+
+        console.log(totalStake);
+
+        let profit = total - totalStake;
+        profitText.textContent = "Total profit: " + profit;
     }
-
-    var returnText = document.getElementById('totalReturns');
-    var profitText = document.getElementById('totalProfit');
-
-    returnText.textContent = "Total returns: " + total;
-
-    console.log(totalStake);
-
-    let profit = total - totalStake;
-    profitText.textContent = "Total profit: " + profit;
 
 }
 
