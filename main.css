@@ -1,11 +1,42 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
+  display: flex;
+  flex-direction: column;
   background: white;
   font-family: Consolas, "Courier New", monospace;
   color: black;
   line-height: 1.6;
 }
 
+.header {
+  background: linear-gradient(to top, #ff1f1f, #ff4d4d);
+  color: white;
+  display: flex;
+  justify-content: center;
+}
+
+footer {
+  width: 100%;
+  padding: 5px 0;
+  color: #ddd;
+  font-size: 12px;
+  background: black;
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.link {
+  text-decoration: none;
+  color: white;
+}
+
 .bet-types-container {
+    margin: 10px;
     display: flex;
     column-gap: 10px;
     row-gap: 5px;

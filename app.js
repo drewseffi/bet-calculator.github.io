@@ -4,6 +4,14 @@ var treble = document.getElementById('treble');
 
 var numSelections = document.getElementById('numOfSelections');
 
+let selectedBets = [];
+
+var unitStake = 0;
+var totalStake = 0;
+
+var topInput = [];
+var bottomInput = [];
+
 function valueChange() 
 {
     var container = document.getElementById('dynamic');
@@ -12,6 +20,20 @@ function valueChange()
     var clone = template.content.cloneNode(true);
 
     document.getElementById('dynamic').appendChild(clone);
+}
+
+function updateStake(field)
+{
+    unitStake = parseInt(field.value);
+    updateTotalStake();
+}
+
+function updateTotalStake()
+{
+    const totalStakeDisplay = document.getElementById('totalStake');
+
+    totalStake = unitStake * numSelections.value;
+    totalStakeDisplay.textContent = "Total stake: " + totalStake;
 }
 
 function sanitize(field, type) 
@@ -42,10 +64,8 @@ function updateBoxes() {
         const min = parseInt(box.dataset.min);
         const max = parseInt(box.dataset.max);
 
-        // reset classes
         box.classList.remove("red", "grey");
 
-        // check if current value is within the allowed range
         if (numSelections.value >= min && numSelections.value <= max) {
             box.classList.add("red");
         } else {
@@ -59,6 +79,11 @@ function load()
     var field = document.getElementById('numOfSelections');
     field.value = 1;
     updateBoxes(1);
+    topInput.push(1);
+    bottomInput.push(1);
+    var u = document.getElementById('unitStake');
+    u.value = 1;
+    updateStake(u);
 }
 
 function addSelection()
@@ -68,6 +93,8 @@ function addSelection()
         numSelections.value++;
         valueChange();
     }
+
+    updateTotalStake();
 }
 
 function removeSelection(button)
@@ -77,11 +104,85 @@ function removeSelection(button)
         numSelections.value--;
         button.parentElement.remove();
     }
+
+    updateTotalStake();
 }
 
 document.querySelectorAll('.bet-type').forEach(btn => {
     btn.addEventListener('click', () => {
-        btn.classList.toggle('selected');  // ← allows multi-select
-        console.log("Toggled:", btn.id, "Selected:", btn.classList.contains("selected"));
+        btn.classList.toggle('selected');
+
+        var id = btn.id;
+
+        if (btn.classList.contains('selected'))
+        {
+            selectedBets.push(id);
+        }
+        else
+        {
+            selectedBets = selectedBets.filter(x => x !== id);
+        }
     });
 });
+
+function singleBet(i)
+{
+    let returns = 0;
+
+    var r = ((topInput[i] / bottomInput[i]) * unitStake) + unitStake;
+    returns = returns + r;
+
+    return returns;
+}
+
+function calculate()
+{
+    let total = 0;
+    topInput = [];
+    bottomInput = [];
+    getAllOdds();
+
+    if (contains(selectedBets, 'single'))
+    {
+        const num = Number(numSelections.value);
+
+        for (let i = 0; i < num; i++)
+        {
+            total += singleBet(i);
+        }
+
+
+    }
+
+    var returnText = document.getElementById('totalReturns');
+    var profitText = document.getElementById('totalProfit');
+
+    returnText.textContent = "Total returns: " + total;
+
+    console.log(totalStake);
+
+    let profit = total - totalStake;
+    profitText.textContent = "Total profit: " + profit;
+
+}
+
+function contains(a, obj) {
+    for (var i = 0; i < a.length; i++) {
+        if (a[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function getAllOdds()
+{
+    const rows = document.querySelectorAll('.selection-details');
+
+    rows.forEach(row => {
+        var inputs = row.querySelectorAll('input.odds');
+
+        topInput.push(Number(inputs[0].value));
+        bottomInput.push(Number(inputs[1].value));
+    })
+}

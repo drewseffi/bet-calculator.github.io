@@ -14,8 +14,8 @@ I want this website to work with pure HTML, CSS and JavaScript. As I am new to w
 - [x] Bet types to select
 - [x] Ability to add and remove selections
 - [ ] Dynamic bet type highlighting
-- [ ] Stake entering
-- [ ] Total stake calulation
+- [x] Stake entering
+- [x] Total stake calulation
 - [ ] Returns calculations for win only bets
 - [ ] Returns calculations for each way bets
 - [ ] Ability to select non-runners

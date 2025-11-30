@@ -17,6 +17,10 @@
         </div>
     </template>
 
+    <div class="header">
+        <h1>Drewseffi's Bet Calulator</h1>
+    </div>
+
     <div class="bet-types-container">
         <div class="bet-type" id="single" data-min="1" data-max="15">Single</div>
         <div class="bet-type" id="double" data-min="2" data-max="15">Double</div>
@@ -54,7 +58,7 @@
             <p class="title-no-center">Bet Options:</p>
             <div>
                 <label for="unit-stake">Unit stake:</label>
-                <input name="unit-stake" value="1" id="unitStake" onchange="sanitize(this, 2)" style="width: 45px"/>
+                <input name="unit-stake" value="1" id="unitStake" onchange="sanitize(this, 2), updateStake(this)" style="width: 45px"/>
             </div>
             <div style="display: flex; column-gap: 10px;">
                 <p style="margin: 0">Each-way:</p>
@@ -63,6 +67,7 @@
                     <span class="slider round"></span>
                 </label>
             </div>
+            <p style="margin: 0" id="totalStake">Total stake:</p>
             <p class="title-no-center">Bet Breakdown:</p>
             <div id="bet-breakdown">
                 <p style="margin: 0">Test textTest textTest textTest textTest text</p>
@@ -74,9 +79,17 @@
                 <p style="margin: 0">Test textTest textTest textTest textTest text</p>
                 <p style="margin: 0">Test textTest textTest textTest textTest text</p>
             </div>
-            <button type="button" id="calcButton" class="calculate-button">Calculate</button>
+            <button type="button" id="calcButton" class="calculate-button" onclick="calculate()">Calculate</button>
+            <p class="title-no-center">Returns Details:</p>
+            <p style="margin: 0" id="totalReturns">Total returns:</p>
+            <p style="margin: 0" id="totalProfit">Total profit:</p>
         </div>
     </div>
+
+    <footer>
+        <p style="margin: 0;">© 2025 Drew Sutherland. All rights reserved.</p>
+        <a href="https://drewseffi.github.io/" class="link" target="_blank">Click here to see more of my work</a>
+    </footer>
 
     <script src="app.js"></script>
 </body>
