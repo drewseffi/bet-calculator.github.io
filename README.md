@@ -23,3 +23,11 @@ I want this website to work with pure HTML, CSS and JavaScript. As I am new to w
 - [ ] Returns calculations for reverse forecasts
 - [ ] Rule 4 calulations
 - [ ] Returns calculations for tricasts
+
+## References
+I was using a few different web based bet calculators to get some inspiration how I wanted my website to look and to function. They are here below to see what else other people have been making.
+
+- https://www.free-bet-calculator.co.uk/
+- https://www.aceodds.com/bet-calculator.html
+- https://news.paddypower.com/bet-calculator/
+- https://www.racingpost.com/free-bets/bet-calculator/
