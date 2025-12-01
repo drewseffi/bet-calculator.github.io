@@ -70,6 +70,11 @@ function updateBoxes() {
             box.classList.add("red");
         } else {
             box.classList.add("grey");
+            if (box.classList.contains('selected'))
+            {
+                box.classList.remove('selected');
+                selectedBets = selectedBets.filter(x => x !== box.id);
+            }
         }
     });
 }
@@ -106,21 +111,25 @@ function removeSelection(button)
     }
 
     updateTotalStake();
+    updateBoxes();
 }
 
 document.querySelectorAll('.bet-type').forEach(btn => {
     btn.addEventListener('click', () => {
-        btn.classList.toggle('selected');
-
-        var id = btn.id;
-
-        if (btn.classList.contains('selected'))
+        if (btn.classList.contains('red'))
         {
-            selectedBets.push(id);
-        }
-        else
-        {
-            selectedBets = selectedBets.filter(x => x !== id);
+            btn.classList.toggle('selected');
+
+            var id = btn.id;
+
+            if (btn.classList.contains('selected'))
+            {
+                selectedBets.push(id);
+            }
+            else
+            {
+                selectedBets = selectedBets.filter(x => x !== id);
+            }
         }
     });
 });
@@ -152,19 +161,22 @@ function calculate()
             {
                 total += singleBet(i);
             }
-
-
         }
 
-        var returnText = document.getElementById('totalReturns');
-        var profitText = document.getElementById('totalProfit');
+        if (selectedBets.length > 0)
+        {
+            var returnText = document.getElementById('totalReturns');
+            var profitText = document.getElementById('totalProfit');
 
-        returnText.textContent = "Total returns: " + total;
+            returnText.textContent = "Total returns: " + total;
 
-        console.log(totalStake);
+            console.log(totalStake);
 
-        let profit = total - totalStake;
-        profitText.textContent = "Total profit: " + profit;
+            let profit = total - totalStake;
+            profitText.textContent = "Total profit: " + profit;
+
+            console.log(selectedBets);
+        }
     }
 
 }
