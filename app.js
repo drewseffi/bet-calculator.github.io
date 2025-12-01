@@ -2,6 +2,8 @@ var single = document.getElementById('single');
 var double = document.getElementById('double');
 var treble = document.getElementById('treble');
 
+var betDetailsText = document.getElementById('bet-breakdown');
+
 var numSelections = document.getElementById('numOfSelections');
 
 let selectedBets = [];
@@ -100,6 +102,7 @@ function addSelection()
     }
 
     updateTotalStake();
+    betDetails();
 }
 
 function removeSelection(button)
@@ -112,6 +115,71 @@ function removeSelection(button)
 
     updateTotalStake();
     updateBoxes();
+    betDetails();
+}
+
+function singleText()
+{
+    const parent = document.getElementById('bet-breakdown');
+
+    var t = document.createElement("p");
+    t.textContent = numSelections.value + "x singles, " + unitStake + " stake";
+    t.style = "margin: 0";
+    t.id = "singleText";
+    parent.appendChild(t);
+}
+
+function doubleText()
+{
+    const parent = document.getElementById('bet-breakdown');
+
+    var n = Number(numSelections.value);
+    let pairs = n * (n - 1) / 2;
+
+    var t = document.createElement("p");
+    t.textContent = pairs + "x doubles, " + unitStake + " stake";
+    t.style = "margin: 0";
+    t.id = "doubleText";
+    parent.appendChild(t);
+}
+
+function trebleText()
+{
+    const parent = document.getElementById('bet-breakdown');
+
+    var n = Number(numSelections.value);
+    let trebles = (n* (n - 1) * (n - 2)) / 6;
+
+    var t = document.createElement("p");
+    t.textContent = trebles + "x trebles, " + unitStake + " stake";
+    t.style = "margin: 0";
+    t.id = "trebleText";
+    parent.appendChild(t);
+}
+
+function betDetails()
+{
+    const parent = document.getElementById('bet-breakdown');
+
+    parent.innerHTML = "";
+
+    for (let i = 0; i < selectedBets.length; i++)
+    {
+        switch (selectedBets[i])
+        {
+            case 'single':
+                singleText();
+                break;
+
+            case 'double':
+                doubleText();
+                break;
+
+            case 'treble':
+                trebleText();
+                break;
+        }
+    }
 }
 
 document.querySelectorAll('.bet-type').forEach(btn => {
@@ -125,10 +193,12 @@ document.querySelectorAll('.bet-type').forEach(btn => {
             if (btn.classList.contains('selected'))
             {
                 selectedBets.push(id);
+                betDetails();
             }
             else
             {
                 selectedBets = selectedBets.filter(x => x !== id);
+                betDetails();
             }
         }
     });
