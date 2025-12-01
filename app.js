@@ -168,6 +168,33 @@ function doubleBet()
     return returns;
 }
 
+function trebleBet()
+{
+    let returns = 0;
+
+    var results = [];
+
+    for (let i = 0; i < topInput.length; i++) {
+        for (let j = i + 1; j < topInput.length; j++) {
+            for (let k = j + 1; k < topInput.length; k++)
+            {
+                var a = (topInput[i] / bottomInput[i]) + 1;
+                var b = (topInput[j] / bottomInput[j]) + 1;
+                var c = (topInput[k] / bottomInput[k]) + 1;
+
+                results.push(a * b * c);
+            }
+        }
+    }
+
+    for (let count = 0; count < results.length; count++)
+    {
+        returns += results[count] * unitStake;
+    }
+
+    return returns;
+}
+
 function calculate()
 {
     if (selectedBets.length > 0)
@@ -192,6 +219,11 @@ function calculate()
             total += doubleBet()
         }
 
+        if (contains(selectedBets, 'treble'))
+        {
+            total += trebleBet()
+        }
+
         if (selectedBets.length > 0)
         {
             var returnText = document.getElementById('totalReturns');
@@ -205,7 +237,6 @@ function calculate()
             console.log(selectedBets);
         }
     }
-
 }
 
 function contains(a, obj) {
