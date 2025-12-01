@@ -14,6 +14,7 @@ var totalStake = 0;
 var topInput = [];
 var bottomInput = [];
 
+// Adds rows to the selections group dynamically
 function valueChange() 
 {
     var container = document.getElementById('dynamic');
@@ -24,6 +25,7 @@ function valueChange()
     document.getElementById('dynamic').appendChild(clone);
 }
 
+// Updates the unit stake when changed on the page
 function updateStake(field)
 {
     unitStake = parseInt(field.value);
@@ -37,6 +39,16 @@ function updateTotalStake()
     //totalStake = unitStake * numSelections.value;
     //totalStakeDisplay.textContent = "Total stake: " + totalStake;
 }
+
+/**
+ * Makes sure all inputs in input fields are valid
+ * 
+ * @param {document.getElementById} field - The field the function is meant to sanitize
+ * @param {number} type - What type of field the function is meant to be sanitizing
+ * 
+ * type 1 = field is from an odds selection, min value is 1, default value 1
+ * type 2 = field is from the stake selection, min value is 0, default value 1
+ */
 
 function sanitize(field, type) 
 {
@@ -60,6 +72,14 @@ function sanitize(field, type)
     }
 }
 
+/**
+ * Updates bet boxes colour
+ * 
+ * Logic:
+ *  - If the bet number of selections matches the min and max requirements for a bet set the colour to red
+ *  - If not set the colour to grey
+ *  - Also removes "selected" class from any bet that is no longer available (if you selected a double then removed selections down to one it would still be selected)
+ */
 function updateBoxes() {
     document.querySelectorAll(".bet-type").forEach(box => {
 
@@ -81,6 +101,10 @@ function updateBoxes() {
     });
 }
 
+/**
+ * Clears and sanitizes all inputs on load
+ *  - Waits for DOM to load before running
+ */
 function load()
 {
     var field = document.getElementById('numOfSelections');
@@ -93,6 +117,7 @@ function load()
     updateStake(u);
 }
 
+// Adds a selection to the list and updates the stake and bet details
 function addSelection()
 {
     if (numSelections.value < 15)
@@ -105,6 +130,7 @@ function addSelection()
     betDetails();
 }
 
+// Removes a selection from the list and updates the stake and bet details
 function removeSelection(button)
 {
     if (numSelections.value > 1)
@@ -118,6 +144,7 @@ function removeSelection(button)
     betDetails();
 }
 
+// Writes the bet details text for single bets
 function singleText()
 {
     const parent = document.getElementById('bet-breakdown');
@@ -129,6 +156,12 @@ function singleText()
     parent.appendChild(t);
 }
 
+/**
+ * Writes the bet details for double bets
+ * 
+ * Logic:
+ *  - Calculates the number of unique pairs of selections using the formula n * (n - 1) / 2
+ */
 function doubleText()
 {
     const parent = document.getElementById('bet-breakdown');
@@ -143,12 +176,18 @@ function doubleText()
     parent.appendChild(t);
 }
 
+/**
+ * Writes the bet details for treble bets
+ * 
+ * Logic:
+ *  - Calculates the number of unique 3 combinations using the formula (n * (n - 1) * (n - 2)) / 6
+ */
 function trebleText()
 {
     const parent = document.getElementById('bet-breakdown');
 
     var n = Number(numSelections.value);
-    let trebles = (n* (n - 1) * (n - 2)) / 6;
+    let trebles = (n * (n - 1) * (n - 2)) / 6;
 
     var t = document.createElement("p");
     t.textContent = trebles + "x trebles, " + unitStake + " stake";
@@ -157,6 +196,14 @@ function trebleText()
     parent.appendChild(t);
 }
 
+/**
+ * Checks what bet types are selected and what bets need displayed
+ * 
+ * Logic:
+ *  - Clears the bet breakdown section before it is run to ensure no duplicates
+ *  - Switch for each different type of bet
+ *  - Some bets are just named combinations of singles, doubles, trebles and accumulators so dont need their own functions
+ */
 function betDetails()
 {
     const parent = document.getElementById('bet-breakdown');
@@ -182,6 +229,15 @@ function betDetails()
     }
 }
 
+/**
+ * OnClick event for bet type buttons to select them
+ * 
+ * Logic:
+ *  - Checks if a button is available to press
+ *  - If it is, toggle the selected class
+ *  - If selected add it to the selected bets array and update bet details
+ *  - If not selected, filter the list so that it no longer contains that selection and update bet details
+ */
 document.querySelectorAll('.bet-type').forEach(btn => {
     btn.addEventListener('click', () => {
         if (btn.classList.contains('red'))
@@ -204,6 +260,16 @@ document.querySelectorAll('.bet-type').forEach(btn => {
     });
 });
 
+/**
+ * Calculate a single win bet
+ * 
+ * @param {number} i - Iteration of the loop in the calculate function
+ * @returns - Total returns for the bet
+ * 
+ * Logic:
+ *  - ((numerator / denominator) * unitStake) + unitStake
+ *  - This is a basic formula for betting a single bet, this is looped for every selection in the calulate function
+ */
 function singleBet(i)
 {
     let returns = 0;
@@ -214,6 +280,16 @@ function singleBet(i)
     return returns;
 }
 
+/**
+ * Calculate any number of double bets
+ * 
+ * Logic:
+ *  - Loops through all pairs of numerator and denominators
+ *  - Calculates the total odds of each bet (selection1odds * selection2odds)
+ *  - Loops through all possible doubles and calculates the returns
+ * 
+ * @returns - Total returns of the bets
+ */
 function doubleBet()
 {
     let returns = 0;
@@ -238,6 +314,16 @@ function doubleBet()
     return returns;
 }
 
+/**
+ * Calculate any number of treble bets
+ * 
+ * Logic:
+ *  - Loops through all groups of 3 numerators and denominators
+ *  - Calculates the total odds of each bet (selection1odds * selection2odds * selection3odds)
+ *  - Loops through all possible trebles and calculates the returns
+ * 
+ * @returns - Total returns of the bets
+ */
 function trebleBet()
 {
     let returns = 0;
@@ -265,6 +351,16 @@ function trebleBet()
     return returns;
 }
 
+/**
+ * Calculates an accumulator bet
+ * 
+ * Logic:
+ *  - Loops through all numerators and denominators and gets their odds
+ *  - Multiplies these odds together to get the total accumulator bet odds
+ *  - Calculates total returns
+ * 
+ * @returns - Total returns of the bet
+ */
 function accBet()
 {
     let returns = 0;
@@ -279,6 +375,15 @@ function accBet()
     return returns;
 }
 
+/**
+ * Calls all bet funtions required to get total returns
+ * 
+ * Logic:
+ *  - Clears all variable and gets all odds input
+ *  - Loops through each selected bet and check what bet type they are
+ *  - Calls appropriate bet calculation function and adds to the total
+ *  - Ouputs the total returns to the user
+ */
 function calculate()
 {
     if (selectedBets.length > 0)
@@ -347,6 +452,14 @@ function calculate()
     }
 }
 
+/**
+ * Contains function for checking if an item is in an array
+ * - Taken from stack overflow user brad at: https://stackoverflow.com/questions/237104/how-do-i-check-if-an-array-includes-a-value-in-javascript
+ * 
+ * @param {array[]} a - The array to search through
+ * @param {*} obj - The item the function is looking for
+ * @returns - True or false based on if the function found the item
+ */
 function contains(a, obj) {
     for (var i = 0; i < a.length; i++) {
         if (a[i] === obj) {
@@ -356,6 +469,12 @@ function contains(a, obj) {
     return false;
 }
 
+/**
+ * Gets all odds on the page and stores them in the array
+ * 
+ * topInput - The numerator
+ * bottomInput - The denominator
+ */
 function getAllOdds()
 {
     const rows = document.querySelectorAll('.selection-details');
