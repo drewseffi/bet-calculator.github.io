@@ -30,10 +30,10 @@ function updateStake(field)
 
 function updateTotalStake()
 {
-    const totalStakeDisplay = document.getElementById('totalStake');
+    //const totalStakeDisplay = document.getElementById('totalStake');
 
-    totalStake = unitStake * numSelections.value;
-    totalStakeDisplay.textContent = "Total stake: " + totalStake;
+    //totalStake = unitStake * numSelections.value;
+    //totalStakeDisplay.textContent = "Total stake: " + totalStake;
 }
 
 function sanitize(field, type) 
@@ -144,6 +144,30 @@ function singleBet(i)
     return returns;
 }
 
+function doubleBet()
+{
+    let returns = 0;
+
+    var results = [];
+
+    for (let i = 0; i < topInput.length; i++) {
+        for (let j = i + 1; j < topInput.length; j++) {
+
+            var a = (topInput[i] / bottomInput[i]) + 1;
+            var b = (topInput[j] / bottomInput[j]) + 1;
+
+            results.push(a * b);
+        }
+    }
+
+    for (let k = 0; k < results.length; k++)
+    {
+        returns += results[k] * unitStake;
+    }
+
+    return returns;
+}
+
 function calculate()
 {
     if (selectedBets.length > 0)
@@ -163,14 +187,17 @@ function calculate()
             }
         }
 
+        if (contains(selectedBets, 'double'))
+        {
+            total += doubleBet()
+        }
+
         if (selectedBets.length > 0)
         {
             var returnText = document.getElementById('totalReturns');
             var profitText = document.getElementById('totalProfit');
 
             returnText.textContent = "Total returns: " + total;
-
-            console.log(totalStake);
 
             let profit = total - totalStake;
             profitText.textContent = "Total profit: " + profit;
