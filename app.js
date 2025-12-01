@@ -195,6 +195,20 @@ function trebleBet()
     return returns;
 }
 
+function accBet()
+{
+    let returns = 0;
+    let totalOdds = 1;
+
+    for (let i = 0; i < numSelections.value; i++)
+    {
+        totalOdds *= ((topInput[i] / bottomInput[i]) + 1);
+    }
+
+    returns = totalOdds * unitStake;
+    return returns;
+}
+
 function calculate()
 {
     if (selectedBets.length > 0)
@@ -222,6 +236,30 @@ function calculate()
         if (contains(selectedBets, 'treble'))
         {
             total += trebleBet()
+        }
+
+        if (contains(selectedBets, 'trixie'))
+        {
+            total += doubleBet();
+            total += trebleBet();
+        }
+
+        if (contains(selectedBets, 'patent'))
+        {
+            const num = Number(numSelections.value);
+
+            for (let i = 0; i < num; i++)
+            {
+                total += singleBet(i);
+            }
+
+            total += doubleBet();
+            total += trebleBet();
+        }
+
+        if (contains(selectedBets, 'acc'))
+        {
+            total += accBet();
         }
 
         if (selectedBets.length > 0)
