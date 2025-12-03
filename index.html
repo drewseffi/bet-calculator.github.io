@@ -13,6 +13,13 @@
             <input class="odds" value="1" onchange="sanitize(this, 1)">
             <p>/</p>
             <input class="odds" value="1" onchange="sanitize(this, 1)">
+            <div class="dropdown" id="place">Place
+                <div class="dropdown-content">
+                    <p style="margin: 0" onclick="makeWinner(this)">Win</p>
+                    <p style="margin: 0">Placed</p>
+                    <p style="margin: 0">Lost</p>
+                </div>
+            </div>
             <button type="button" class="delete-button" onclick="removeSelection(this), updateBoxes()">X</button>
         </div>
     </template>
