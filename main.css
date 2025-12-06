@@ -267,6 +267,7 @@ input:checked + .slider:before {
   width: 100%;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   box-sizing: border-box;
+  z-index: 9999;
 }
 
 .dropdown:hover .dropdown-content {

@@ -497,16 +497,51 @@ function getAllOdds()
 
             topInput.push(Number(inputs[0].value));
             bottomInput.push(Number(inputs[1].value));
-            console.log("winenr");
         }
     })
+}
+
+function clearOutcome(c) {
+    c.classList.forEach(elem => {
+        if (elem !== 'selection-details')
+        {
+            c.classList.remove(elem);
+        }
+    });
 }
 
 // Makes selection a winner and adds winner class
 function makeWinner(text)
 {
-    const c = text.closest('.selection-details');
+    var c = text.closest('.selection-details');
+
+    clearOutcome(c);
+
     c.classList.add('winner');
 
-    text.closest('.dropdown').textContent = "Winner";
+    text.closest('.dropdown').querySelector('.dropdown-label').textContent = "Winner";
+}
+
+// Makes selection placed and adds placed class
+function makePlaced(text)
+{
+    var c = text.closest('.selection-details');
+
+    clearOutcome(c);
+
+    c.classList.add('placed');
+
+    text.closest('.dropdown').querySelector('.dropdown-label').textContent = "Placed";
+}
+
+// Makes selection a loser and adds loser class
+function makeLoser(text)
+{
+    var c = text.closest('.selection-details');
+
+    clearOutcome(c);
+
+    c.classList.add('loser');
+
+    text.closest('.dropdown').querySelector('.dropdown-label').textContent = "Lost";
 }
