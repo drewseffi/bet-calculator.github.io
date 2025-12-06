@@ -395,7 +395,7 @@ function calculate()
 
         if (contains(selectedBets, 'single'))
         {
-            const num = Number(numSelections.value);
+            const num = Number(topInput.length);
 
             for (let i = 0; i < num; i++)
             {
@@ -442,12 +442,16 @@ function calculate()
             var returnText = document.getElementById('totalReturns');
             var profitText = document.getElementById('totalProfit');
 
+            if (topInput.length == 0)
+            {
+                total = 0;
+            }
+
             returnText.textContent = "Total returns: " + total;
+            console.log(total);
 
             let profit = total - totalStake;
             profitText.textContent = "Total profit: " + profit;
-
-            console.log(selectedBets);
         }
     }
 }
@@ -470,7 +474,7 @@ function contains(a, obj) {
 }
 
 /**
- * Gets all odds on the page and stores them in the array
+ * Gets all winning odds on the page and stores them in the array
  * 
  * topInput - The numerator
  * bottomInput - The denominator
@@ -480,9 +484,23 @@ function getAllOdds()
     const rows = document.querySelectorAll('.selection-details');
 
     rows.forEach(row => {
-        var inputs = row.querySelectorAll('input.odds');
 
-        topInput.push(Number(inputs[0].value));
-        bottomInput.push(Number(inputs[1].value));
+        if (row.classList.contains('winner'))
+        {
+            var inputs = row.querySelectorAll('input.odds');
+
+            topInput.push(Number(inputs[0].value));
+            bottomInput.push(Number(inputs[1].value));
+            console.log("winenr");
+        }
     })
+}
+
+// Makes selection a winner and adds winner class
+function makeWinner(text)
+{
+    const c = text.closest('.selection-details');
+    c.classList.add('winner');
+
+    text.closest('.dropdown').textContent = "Winner";
 }
