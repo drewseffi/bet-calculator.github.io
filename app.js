@@ -363,6 +363,12 @@ function trebleBet()
  */
 function accBet()
 {
+    // Checks to see if all selections won
+    if (numSelections.value != topInput.length)
+    {
+        return 0;
+    }
+
     let returns = 0;
     let totalOdds = 1;
 
