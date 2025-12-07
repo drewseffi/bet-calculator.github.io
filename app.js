@@ -427,7 +427,7 @@ function calculate()
 
         if (contains(selectedBets, 'patent'))
         {
-            const num = Number(numSelections.value);
+            const num = Number(topInput.length);
 
             for (let i = 0; i < num; i++)
             {
@@ -441,6 +441,41 @@ function calculate()
         if (contains(selectedBets, 'acc'))
         {
             total += accBet();
+        }
+
+        if (contains(selectedBets, 'lucky15'))
+        {
+          const num = Number(topInput.length);
+
+            for (let i = 0; i < num; i++)
+            {
+                if (topInput.length == 1)
+                {
+                    /**
+                     * For lucky 15s, if only one horse wins you get double the returns for that selection as consolidation, as the singleBet
+                     * function doesnt account for this we need to manually take away the unit stake (as this is returned as part of the singleBet
+                     * function), multiply by 2 and then add back the unit stake.
+                     */
+                    total += singleBet(i);
+                    total = total - unitStake;
+                    total = total * 2;
+                    total = total + unitStake;
+                }
+                else
+                {
+                    total += singleBet(i);
+                }
+            }
+
+            total += doubleBet();
+            total += trebleBet();
+            total += accBet();
+
+            // When all 4 selections win in a lucky 15 you get a 10% bonus to all returns
+            if (topInput.length == 4)
+            {
+                total += ((total / 100) * 10);
+            }
         }
 
         if (selectedBets.length > 0)
