@@ -68,6 +68,7 @@ footer {
 
 .bet-type:hover {
   transform: scale(1.1);
+  cursor: pointer;
 }
 
 .bet-details {
@@ -144,6 +145,7 @@ footer {
 
 .delete-button:hover {
   background-color: #c0392b;
+  cursor: pointer;
 }
 
 .calculate-button:hover {
@@ -167,6 +169,7 @@ footer {
 
 .add-button:hover {
   background-color: rgb(145, 145, 145);
+  cursor: pointer;
 }
 
 .main-container {
