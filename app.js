@@ -453,8 +453,9 @@ function calculate()
                 total = 0;
             }
 
+            total = total.toFixed(2);
+
             returnText.textContent = "Total returns: " + total;
-            console.log(total);
 
             let profit = total - totalStake;
             profitText.textContent = "Total profit: " + profit;
