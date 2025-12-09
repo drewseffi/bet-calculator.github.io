@@ -13,7 +13,7 @@ I want this website to work with pure HTML, CSS and JavaScript. As I am new to w
 ## Milestones
 - [x] Bet types to select
 - [x] Ability to add and remove selections
-- [ ] Dynamic bet type highlighting
+- [x] Dynamic bet type highlighting
 - [x] Stake entering
 - [x] Total stake calulation
 - [ ] Returns calculations for win only bets
