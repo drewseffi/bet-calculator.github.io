@@ -381,6 +381,41 @@ function accBet()
     return returns;
 }
 
+function nFold(n)
+{
+    let total = 0;
+
+    /**
+     * Recursion helper function
+     * @param {*} startIndex - Where to start picking elements
+     * @param {*} combo - Array storing indexes of current selections
+     * @returns 
+     */
+    function build(startIndex, combo) {
+        // If we have n items
+        if (combo.length === n) {
+            let totalOdds = 1;
+
+            for (let idx of combo) {
+                totalOdds *= ((topInput[idx] / bottomInput[idx]) + 1);
+            }
+
+            total += totalOdds * unitStake;
+            return;
+        }
+
+        // Pick the next selections to iterate over
+        for (let i = startIndex; i < topInput.length; i++) {
+            combo.push(i);
+            build(i + 1, combo);
+            combo.pop();
+        }
+    }
+
+    build(0, []);
+    return total;
+}
+
 /**
  * Calls all bet funtions required to get total returns
  * 
@@ -478,6 +513,42 @@ function calculate()
             }
         }
 
+        if (contains(selectedBets, 'lucky31'))
+        {
+          const num = Number(topInput.length);
+
+            for (let i = 0; i < num; i++)
+            {
+                if (topInput.length == 1)
+                {
+                    /**
+                     * For lucky 31s, if only one horse wins you get double the returns for that selection as consolidation, as the singleBet
+                     * function doesnt account for this we need to manually take away the unit stake (as this is returned as part of the singleBet
+                     * function), multiply by 2 and then add back the unit stake.
+                     */
+                    total += singleBet(i);
+                    total = total - unitStake;
+                    total = total * 2;
+                    total = total + unitStake;
+                }
+                else
+                {
+                    total += singleBet(i);
+                }
+            }
+
+            total += doubleBet();
+            total += trebleBet();
+            total += nFold(4);
+            total += accBet();
+
+            // When all 5 selections win in a lucky 31 you get a 20% bonus to all returns
+            if (topInput.length == 5)
+            {
+                total += ((total / 100) * 20);
+            }
+        }
+
         if (selectedBets.length > 0)
         {
             var returnText = document.getElementById('totalReturns');
@@ -488,7 +559,7 @@ function calculate()
                 total = 0;
             }
 
-            total = total.toFixed(2);
+            //total = total.toFixed(2);
 
             returnText.textContent = "Total returns: " + total;
 
