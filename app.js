@@ -381,6 +381,12 @@ function accBet()
     return returns;
 }
 
+/**
+ * Calculates accumulators of dynamic sizes such as 4-folds and 5-folds
+ * 
+ * @param {*} n - Size of the accumulator you want to calculate
+ * @returns 
+ */
 function nFold(n)
 {
     let total = 0;
@@ -546,6 +552,43 @@ function calculate()
             if (topInput.length == 5)
             {
                 total += ((total / 100) * 20);
+            }
+        }
+
+        if (contains(selectedBets, 'lucky63'))
+        {
+            const num = Number(topInput.length);
+
+            for (let i = 0; i < num; i++)
+            {
+                if (topInput.length == 1)
+                {
+                    /**
+                     * For lucky 63s, if only one horse wins you get double the returns for that selection as consolidation, as the singleBet
+                     * function doesnt account for this we need to manually take away the unit stake (as this is returned as part of the singleBet
+                     * function), multiply by 2 and then add back the unit stake.
+                     */
+                    total += singleBet(i);
+                    total = total - unitStake;
+                    total = total * 2;
+                    total = total + unitStake;
+                }
+                else
+                {
+                    total += singleBet(i);
+                }
+            }
+
+            total += doubleBet();
+            total += trebleBet();
+            total += nFold(4);
+            total += nFold(5);
+            total += accBet();
+
+            // When all 5 selections win in a lucky 63 you get a 25% bonus to all returns
+            if (topInput.length == 6)
+            {
+                total += ((total / 100) * 25);
             }
         }
 
