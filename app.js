@@ -599,6 +599,33 @@ function calculate()
             total += accBet();
         }
 
+        if (contains(selectedBets, 'canadian'))
+        {
+            total += doubleBet();
+            total += trebleBet();
+            total += nFold(4);
+            total += accBet();
+        }
+
+        if (contains(selectedBets, 'heinz'))
+        {
+            total += doubleBet();
+            total += trebleBet();
+            total += nFold(4);
+            total += nFold(5);
+            total += accBet();
+        }
+
+        if (contains(selectedBets, 'super-heinz'))
+        {
+            total += doubleBet();
+            total += trebleBet();
+            total += nFold(4);
+            total += nFold(5);
+            total += nFold(6);
+            total += accBet();
+        }
+
         if (selectedBets.length > 0)
         {
             var returnText = document.getElementById('totalReturns');
