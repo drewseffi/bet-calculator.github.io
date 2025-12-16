@@ -585,11 +585,18 @@ function calculate()
             total += nFold(5);
             total += accBet();
 
-            // When all 5 selections win in a lucky 63 you get a 25% bonus to all returns
+            // When all 5 selections win in a lucky 31 you get a 25% bonus to all returns
             if (topInput.length == 6)
             {
                 total += ((total / 100) * 25);
             }
+        }
+
+        if (contains(selectedBets, 'yankee'))
+        {
+            total += doubleBet();
+            total += trebleBet();
+            total += accBet();
         }
 
         if (selectedBets.length > 0)
