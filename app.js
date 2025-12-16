@@ -422,6 +422,35 @@ function nFold(n)
     return total;
 }
 
+// Calculates returns for patent bet
+function patentBet()
+{
+    let returns = 0;
+    const num = Number(topInput.length);
+
+    for (let i = 0; i < num; i++)
+    {
+        returns += singleBet(i);
+    }
+
+    returns += doubleBet();
+    returns += trebleBet();
+
+    return returns;
+}
+
+// Calculates returns for a yankee bet
+function yankeeBet()
+{
+    let returns = 0;
+
+    returns += doubleBet();
+    returns += trebleBet();
+    returns += accBet();
+
+    return returns;
+}
+
 /**
  * Calls all bet funtions required to get total returns
  * 
@@ -468,15 +497,7 @@ function calculate()
 
         if (contains(selectedBets, 'patent'))
         {
-            const num = Number(topInput.length);
-
-            for (let i = 0; i < num; i++)
-            {
-                total += singleBet(i);
-            }
-
-            total += doubleBet();
-            total += trebleBet();
+            total += patentBet();
         }
 
         if (contains(selectedBets, 'acc'))
@@ -594,9 +615,7 @@ function calculate()
 
         if (contains(selectedBets, 'yankee'))
         {
-            total += doubleBet();
-            total += trebleBet();
-            total += accBet();
+            total += yankeeBet();
         }
 
         if (contains(selectedBets, 'canadian'))
@@ -623,6 +642,17 @@ function calculate()
             total += nFold(4);
             total += nFold(5);
             total += nFold(6);
+            total += accBet();
+        }
+
+        if (contains(selectedBets, 'goliath'))
+        {
+            total += doubleBet();
+            total += trebleBet();
+            total += nFold(4);
+            total += nFold(5);
+            total += nFold(6);
+            total += nFold(7);
             total += accBet();
         }
 
