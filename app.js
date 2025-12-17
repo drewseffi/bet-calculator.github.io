@@ -295,11 +295,11 @@ function singleBet(i)
  * 
  * @returns - Total returns of the bets
  */
-function doubleBet(override1 = null, override2 = null)
+function doubleBet(override = null)
 {
     let returns = 0;
 
-    if (override1 == null)
+    if (override == null)
     {
         var results = [];
 
@@ -325,10 +325,27 @@ function doubleBet(override1 = null, override2 = null)
     }
     else
     {
-        var a = (selections[override1].numerator / selections[override1].denominator) + 1;
-        var b = (selections[override2].numerator / selections[override2].denominator) + 1;
+        var results = [];
 
-        returns += (a * b) * unitStake;
+        for (let i = 0; i < override.length; i++) {
+            for (let j = i + 1; j < override.length; j++) {
+
+                if (override[i].status == "loser" || override[j].status == "loser")
+                {
+                    continue;
+                }
+
+                var a = (override[i].numerator / override[i].denominator) + 1;
+                var b = (override[j].numerator / override[j].denominator) + 1;
+
+                results.push(a * b);
+            }
+        }
+
+        for (let k = 0; k < results.length; k++)
+        {
+            returns += results[k] * unitStake;
+        }
     }
 
     return returns;
@@ -344,33 +361,63 @@ function doubleBet(override1 = null, override2 = null)
  * 
  * @returns - Total returns of the bets
  */
-function trebleBet()
+function trebleBet(override = null)
 {
     let returns = 0;
 
-    var results = [];
+    if (override == null)
+    {
+        var results = [];
 
-    for (let i = 0; i < selections.length; i++) {
-        for (let j = i + 1; j < selections.length; j++) {
-            for (let k = j + 1; k < selections.length; k++)
-            {
-                if (selections[i].status == "loser" || selections[j].status == "loser" || selections[k].status == "loser")
+        for (let i = 0; i < selections.length; i++) {
+            for (let j = i + 1; j < selections.length; j++) {
+                for (let k = j + 1; k < selections.length; k++)
                 {
-                    continue;
+                    if (selections[i].status == "loser" || selections[j].status == "loser" || selections[k].status == "loser")
+                    {
+                        continue;
+                    }
+
+                    var a = (selections[i].numerator / selections[i].denominator) + 1;
+                    var b = (selections[j].numerator / selections[j].denominator) + 1;
+                    var c = (selections[k].numerator / selections[k].denominator) + 1;
+
+                    results.push(a * b * c);
                 }
-
-                var a = (selections[i].numerator / selections[i].denominator) + 1;
-                var b = (selections[j].numerator / selections[j].denominator) + 1;
-                var c = (selections[k].numerator / selections[k].denominator) + 1;
-
-                results.push(a * b * c);
             }
         }
-    }
 
-    for (let count = 0; count < results.length; count++)
+        for (let count = 0; count < results.length; count++)
+        {
+            returns += results[count] * unitStake;
+        }
+    }
+    else
     {
-        returns += results[count] * unitStake;
+        var results = [];
+
+        for (let i = 0; i < override.length; i++) {
+            for (let j = i + 1; j < override.length; j++) {
+                for (let k = j + 1; k < override.length; k++)
+                {
+                    if (override[i].status == "loser" || override[j].status == "loser" || override[k].status == "loser")
+                    {
+                        continue;
+                    }
+
+                    var a = (override[i].numerator / override[i].denominator) + 1;
+                    var b = (override[j].numerator / override[j].denominator) + 1;
+                    var c = (override[k].numerator / override[k].denominator) + 1;
+
+                    results.push(a * b * c);
+                }
+            }
+        }
+
+        for (let count = 0; count < results.length; count++)
+        {
+            returns += results[count] * unitStake;
+        }
     }
 
     return returns;
@@ -386,19 +433,34 @@ function trebleBet()
  * 
  * @returns - Total returns of the bet
  */
-function accBet()
+function accBet(override = null)
 {
     let returns = 0;
     let totalOdds = 1;
 
-    for (let i = 0; i < numSelections.value; i++)
+    if (override == null)
     {
-        totalOdds *= ((selections[i].numerator / selections[i].denominator) + 1);
-        if (selections[i].status == "loser")
+        for (let i = 0; i < numSelections.value; i++)
         {
-            totalOdds = 0;
-            break;
+            totalOdds *= ((selections[i].numerator / selections[i].denominator) + 1);
+            if (selections[i].status == "loser")
+            {
+                totalOdds = 0;
+                break;
+            }
         }
+    }
+    else
+    {
+        for (let i = 0; i < override.length; i++)
+        {
+            totalOdds *= ((override[i].numerator / override[i].denominator) + 1);
+            if (override[i].status == "loser")
+            {
+                totalOdds = 0;
+                break;
+            }
+        }   
     }
 
     returns = totalOdds * unitStake;
@@ -447,30 +509,56 @@ function nFold(n)
 }
 
 // Calculates returns for patent bet
-function patentBet()
+function patentBet(override = null)
 {
     let returns = 0;
-    let num = Number(selections.length);
 
-    for (let i = 0; i < num; i++)
+    if (override == null)
     {
-        returns += singleBet(i);
-    }
+        let num = Number(selections.length);
 
-    returns += doubleBet();
-    returns += trebleBet(); 
+        for (let i = 0; i < num; i++)
+        {
+            returns += singleBet(i);
+        }
+
+        returns += doubleBet();
+        returns += trebleBet(); 
+    }
+    else
+    {
+        let num = Number(selections.length);
+
+        for (let i = 0; i < 3; i++)
+        {
+            returns += singleBet(i);
+        }
+
+        returns += doubleBet(override);
+        returns += trebleBet(override);
+    }
 
     return returns;
 }
 
 // Calculates returns for a yankee bet
-function yankeeBet()
+function yankeeBet(override = null)
 {
     let returns = 0;
 
-    returns += doubleBet();
-    returns += trebleBet();
-    returns += accBet();
+    if (override == null)
+    {
+
+        returns += doubleBet();
+        returns += trebleBet();
+        returns += accBet();
+    }
+    else
+    {
+        returns += doubleBet(override);
+        returns += trebleBet(override);
+        returns += accBet(override);
+    }
 
     return returns;
 }
@@ -696,7 +784,42 @@ function calculate()
 
         if (contains(selectedBets, 'alphabet'))
         {
+            let send = [];
+            send[0] = selections[0];
+            send[1] = selections[1];
+            send[2] = selections[2];
 
+            total += patentBet(send);
+
+            send[0] = selections[3];
+            send[1] = selections[4];
+            send[2] = selections[5];
+
+            total += patentBet(send);
+
+            send[0] = selections[1];
+            send[1] = selections[2];
+            send[2] = selections[3];
+            send[3] = selections[5];
+
+            total += yankeeBet(send);
+
+            total += accBet();
+
+            let count = 0;
+
+            for (let i = 0; i < selections.length; i++)
+            {
+                if (selections[i].status == "win")
+                {
+                    count++;
+                }
+            }
+
+            if (count == 6)
+            {
+                total += ((total / 100) * 10);
+            }
         }
 
         if (contains(selectedBets, 'fivespot'))
