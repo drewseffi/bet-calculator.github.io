@@ -290,25 +290,35 @@ function singleBet(i)
  * 
  * @returns - Total returns of the bets
  */
-function doubleBet()
+function doubleBet(override1 = null, override2 = null)
 {
     let returns = 0;
 
-    var results = [];
+    if (override1 == null)
+    {
+        var results = [];
 
-    for (let i = 0; i < topInput.length; i++) {
-        for (let j = i + 1; j < topInput.length; j++) {
+        for (let i = 0; i < topInput.length; i++) {
+            for (let j = i + 1; j < topInput.length; j++) {
 
-            var a = (topInput[i] / bottomInput[i]) + 1;
-            var b = (topInput[j] / bottomInput[j]) + 1;
+                var a = (topInput[i] / bottomInput[i]) + 1;
+                var b = (topInput[j] / bottomInput[j]) + 1;
 
-            results.push(a * b);
+                results.push(a * b);
+            }
+        }
+
+        for (let k = 0; k < results.length; k++)
+        {
+            returns += results[k] * unitStake;
         }
     }
-
-    for (let k = 0; k < results.length; k++)
+    else
     {
-        returns += results[k] * unitStake;
+        var a = (topInput[override1] / bottomInput[override1]) + 1;
+        var b = (topInput[override2] / bottomInput[override2]) + 1;
+
+        returns += (a * b) * unitStake;
     }
 
     return returns;
@@ -426,7 +436,7 @@ function nFold(n)
 function patentBet()
 {
     let returns = 0;
-    const num = Number(topInput.length);
+    let num = Number(topInput.length);
 
     for (let i = 0; i < num; i++)
     {
@@ -434,8 +444,9 @@ function patentBet()
     }
 
     returns += doubleBet();
-    returns += trebleBet();
+    returns += trebleBet(); 
 
+    console.log(returns);
     return returns;
 }
 
@@ -447,6 +458,8 @@ function yankeeBet()
     returns += doubleBet();
     returns += trebleBet();
     returns += accBet();
+
+    console.log(returns);
 
     return returns;
 }
@@ -654,6 +667,26 @@ function calculate()
             total += nFold(6);
             total += nFold(7);
             total += accBet();
+        }
+
+        if (contains(selectedBets, 'alphabet'))
+        {
+
+        }
+
+        if (contains(selectedBets, 'fivespot'))
+        {
+
+        }
+
+        if (contains(selectedBets, 'pontoon'))
+        {
+
+        }
+
+        if (contains(selectedBets, 'mag7'))
+        {
+
         }
 
         if (selectedBets.length > 0)
