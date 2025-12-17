@@ -11,8 +11,7 @@ let selectedBets = [];
 var unitStake = 0;
 var totalStake = 0;
 
-var topInput = [];
-var bottomInput = [];
+var selections = [];
 
 // Adds rows to the selections group dynamically
 function valueChange() 
@@ -110,8 +109,7 @@ function load()
     var field = document.getElementById('numOfSelections');
     field.value = 1;
     updateBoxes(1);
-    topInput.push(1);
-    bottomInput.push(1);
+    selections.push({id: 0, numerator: 1, denominator: 1, status: null})
     var u = document.getElementById('unitStake');
     u.value = 1;
     updateStake(u);
@@ -272,12 +270,19 @@ document.querySelectorAll('.bet-type').forEach(btn => {
  */
 function singleBet(i)
 {
-    let returns = 0;
+    if (selections[i].status == "winner")
+    {
+        let returns = 0;
 
-    var r = ((topInput[i] / bottomInput[i]) * unitStake) + unitStake;
-    returns = returns + r;
+        var r = ((selections[i].numerator / selections[i].denominator) * unitStake) + unitStake;
+        returns = returns + r;
 
-    return returns;
+        return returns;
+    }
+    else 
+    {
+        return 0;
+    }
 }
 
 /**
@@ -298,11 +303,16 @@ function doubleBet(override1 = null, override2 = null)
     {
         var results = [];
 
-        for (let i = 0; i < topInput.length; i++) {
-            for (let j = i + 1; j < topInput.length; j++) {
+        for (let i = 0; i < selections.length; i++) {
+            for (let j = i + 1; j < selections.length; j++) {
 
-                var a = (topInput[i] / bottomInput[i]) + 1;
-                var b = (topInput[j] / bottomInput[j]) + 1;
+                if (selections[i].status == "loser" || selections[j].status == "loser")
+                {
+                    continue;
+                }
+
+                var a = (selections[i].numerator / selections[i].denominator) + 1;
+                var b = (selections[j].numerator / selections[j].denominator) + 1;
 
                 results.push(a * b);
             }
@@ -315,8 +325,8 @@ function doubleBet(override1 = null, override2 = null)
     }
     else
     {
-        var a = (topInput[override1] / bottomInput[override1]) + 1;
-        var b = (topInput[override2] / bottomInput[override2]) + 1;
+        var a = (selections[override1].numerator / selections[override1].denominator) + 1;
+        var b = (selections[override2].numerator / selections[override2].denominator) + 1;
 
         returns += (a * b) * unitStake;
     }
@@ -340,13 +350,18 @@ function trebleBet()
 
     var results = [];
 
-    for (let i = 0; i < topInput.length; i++) {
-        for (let j = i + 1; j < topInput.length; j++) {
-            for (let k = j + 1; k < topInput.length; k++)
+    for (let i = 0; i < selections.length; i++) {
+        for (let j = i + 1; j < selections.length; j++) {
+            for (let k = j + 1; k < selections.length; k++)
             {
-                var a = (topInput[i] / bottomInput[i]) + 1;
-                var b = (topInput[j] / bottomInput[j]) + 1;
-                var c = (topInput[k] / bottomInput[k]) + 1;
+                if (selections[i].status == "loser" || selections[j].status == "loser" || selections[k].status == "loser")
+                {
+                    continue;
+                }
+
+                var a = (selections[i].numerator / selections[i].denominator) + 1;
+                var b = (selections[j].numerator / selections[j].denominator) + 1;
+                var c = (selections[k].numerator / selections[k].denominator) + 1;
 
                 results.push(a * b * c);
             }
@@ -373,18 +388,17 @@ function trebleBet()
  */
 function accBet()
 {
-    // Checks to see if all selections won
-    if (numSelections.value != topInput.length)
-    {
-        return 0;
-    }
-
     let returns = 0;
     let totalOdds = 1;
 
     for (let i = 0; i < numSelections.value; i++)
     {
-        totalOdds *= ((topInput[i] / bottomInput[i]) + 1);
+        totalOdds *= ((selections[i].numerator / selections[i].denominator) + 1);
+        if (selections[i].status == "loser")
+        {
+            totalOdds = 0;
+            break;
+        }
     }
 
     returns = totalOdds * unitStake;
@@ -413,7 +427,7 @@ function nFold(n)
             let totalOdds = 1;
 
             for (let idx of combo) {
-                totalOdds *= ((topInput[idx] / bottomInput[idx]) + 1);
+                totalOdds *= ((selections[idx].numerator / selections[idx].denominator) + 1);
             }
 
             total += totalOdds * unitStake;
@@ -421,7 +435,7 @@ function nFold(n)
         }
 
         // Pick the next selections to iterate over
-        for (let i = startIndex; i < topInput.length; i++) {
+        for (let i = startIndex; i < selections.length; i++) {
             combo.push(i);
             build(i + 1, combo);
             combo.pop();
@@ -436,7 +450,7 @@ function nFold(n)
 function patentBet()
 {
     let returns = 0;
-    let num = Number(topInput.length);
+    let num = Number(selections.length);
 
     for (let i = 0; i < num; i++)
     {
@@ -446,7 +460,6 @@ function patentBet()
     returns += doubleBet();
     returns += trebleBet(); 
 
-    console.log(returns);
     return returns;
 }
 
@@ -458,8 +471,6 @@ function yankeeBet()
     returns += doubleBet();
     returns += trebleBet();
     returns += accBet();
-
-    console.log(returns);
 
     return returns;
 }
@@ -478,13 +489,12 @@ function calculate()
     if (selectedBets.length > 0)
     {
         let total = 0;
-        topInput = [];
-        bottomInput = [];
+        selections = [];
         getAllOdds();
 
         if (contains(selectedBets, 'single'))
         {
-            const num = Number(topInput.length);
+            const num = Number(selections.length);
 
             for (let i = 0; i < num; i++)
             {
@@ -520,61 +530,60 @@ function calculate()
 
         if (contains(selectedBets, 'lucky15'))
         {
-          const num = Number(topInput.length);
+          const num = Number(selections.length);
+          var count = 0;
 
             for (let i = 0; i < num; i++)
             {
-                if (topInput.length == 1)
+                if (selections[i].status == "winner")
                 {
-                    /**
-                     * For lucky 15s, if only one horse wins you get double the returns for that selection as consolidation, as the singleBet
-                     * function doesnt account for this we need to manually take away the unit stake (as this is returned as part of the singleBet
-                     * function), multiply by 2 and then add back the unit stake.
-                     */
-                    total += singleBet(i);
-                    total = total - unitStake;
-                    total = total * 2;
-                    total = total + unitStake;
+                    count++;
                 }
-                else
-                {
-                    total += singleBet(i);
-                }
+            }
+
+            for (let i = 0; i < num; i++)
+            {
+                total += singleBet(i);
             }
 
             total += doubleBet();
             total += trebleBet();
             total += accBet();
 
-            // When all 4 selections win in a lucky 15 you get a 10% bonus to all returns
-            if (topInput.length == 4)
+            if (count == 1)
             {
+                /**
+                 * For lucky 15s, if only one horse wins you get double the returns for that selection as consolidation, as the singleBet
+                 * function doesnt account for this we need to manually take away the unit stake (as this is returned as part of the singleBet
+                 * function), multiply by 2 and then add back the unit stake.
+                 */
+
+                total = (total - unitStake) * 2;
+                total += unitStake;
+            }
+            else if (count == 4)
+            {
+                // When all 4 selections win in a lucky 15 you get a 10% bonus to all returns
                 total += ((total / 100) * 10);
             }
         }
 
         if (contains(selectedBets, 'lucky31'))
         {
-          const num = Number(topInput.length);
+          const num = Number(selections.length);
+          var count = 0;
 
             for (let i = 0; i < num; i++)
             {
-                if (topInput.length == 1)
+                if (selections[i].status == "winner")
                 {
-                    /**
-                     * For lucky 31s, if only one horse wins you get double the returns for that selection as consolidation, as the singleBet
-                     * function doesnt account for this we need to manually take away the unit stake (as this is returned as part of the singleBet
-                     * function), multiply by 2 and then add back the unit stake.
-                     */
-                    total += singleBet(i);
-                    total = total - unitStake;
-                    total = total * 2;
-                    total = total + unitStake;
+                    count++;
                 }
-                else
-                {
-                    total += singleBet(i);
-                }
+            }
+
+            for (let i = 0; i < num; i++)
+            {
+                total += singleBet(i);
             }
 
             total += doubleBet();
@@ -582,35 +591,40 @@ function calculate()
             total += nFold(4);
             total += accBet();
 
-            // When all 5 selections win in a lucky 31 you get a 20% bonus to all returns
-            if (topInput.length == 5)
+            if (count == 1)
             {
+                /**
+                 * For lucky 31s, if only one horse wins you get double the returns for that selection as consolidation, as the singleBet
+                 * function doesnt account for this we need to manually take away the unit stake (as this is returned as part of the singleBet
+                 * function), multiply by 2 and then add back the unit stake.
+                 */
+
+                total = (total - unitStake) * 2;
+                total += unitStake;
+            }
+            else if (count == 5)
+            {
+                // When all 5 selections win in a lucky 31 you get a 20% bonus to all returns
                 total += ((total / 100) * 20);
             }
         }
 
         if (contains(selectedBets, 'lucky63'))
         {
-            const num = Number(topInput.length);
+          const num = Number(selections.length);
+          var count = 0;
 
             for (let i = 0; i < num; i++)
             {
-                if (topInput.length == 1)
+                if (selections[i].status == "winner")
                 {
-                    /**
-                     * For lucky 63s, if only one horse wins you get double the returns for that selection as consolidation, as the singleBet
-                     * function doesnt account for this we need to manually take away the unit stake (as this is returned as part of the singleBet
-                     * function), multiply by 2 and then add back the unit stake.
-                     */
-                    total += singleBet(i);
-                    total = total - unitStake;
-                    total = total * 2;
-                    total = total + unitStake;
+                    count++;
                 }
-                else
-                {
-                    total += singleBet(i);
-                }
+            }
+
+            for (let i = 0; i < num; i++)
+            {
+                total += singleBet(i);
             }
 
             total += doubleBet();
@@ -619,9 +633,20 @@ function calculate()
             total += nFold(5);
             total += accBet();
 
-            // When all 5 selections win in a lucky 31 you get a 25% bonus to all returns
-            if (topInput.length == 6)
+            if (count == 1)
             {
+                /**
+                 * For lucky 63s, if only one horse wins you get double the returns for that selection as consolidation, as the singleBet
+                 * function doesnt account for this we need to manually take away the unit stake (as this is returned as part of the singleBet
+                 * function), multiply by 2 and then add back the unit stake.
+                 */
+
+                total = (total - unitStake) * 2;
+                total += unitStake;
+            }
+            else if (count == 6)
+            {
+                // When all 6 selections win in a lucky 63 you get a 25% bonus to all returns
                 total += ((total / 100) * 25);
             }
         }
@@ -694,7 +719,7 @@ function calculate()
             var returnText = document.getElementById('totalReturns');
             var profitText = document.getElementById('totalProfit');
 
-            if (topInput.length == 0)
+            if (selections.length == 0)
             {
                 total = 0;
             }
@@ -728,22 +753,25 @@ function contains(a, obj) {
 
 /**
  * Gets all winning odds on the page and stores them in the array
- * 
- * topInput - The numerator
- * bottomInput - The denominator
  */
 function getAllOdds()
 {
     const rows = document.querySelectorAll('.selection-details');
 
     rows.forEach(row => {
+        let i = 0;
 
         if (row.classList.contains('winner'))
         {
             var inputs = row.querySelectorAll('input.odds');
 
-            topInput.push(Number(inputs[0].value));
-            bottomInput.push(Number(inputs[1].value));
+            selections.push({id: i, numerator: Number(inputs[0].value), denominator: Number(inputs[1].value), status: "winner"})
+        }
+        else if (row.classList.contains('loser'))
+        {
+            var inputs = row.querySelectorAll('input.odds');
+
+            selections.push({id: i, numerator: Number(inputs[0].value), denominator: Number(inputs[1].value), status: "loser"})
         }
     })
 }
