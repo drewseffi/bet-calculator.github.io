@@ -268,13 +268,23 @@ document.querySelectorAll('.bet-type').forEach(btn => {
  *  - ((numerator / denominator) * unitStake) + unitStake
  *  - This is a basic formula for betting a single bet, this is looped for every selection in the calulate function
  */
-function singleBet(i)
+function singleBet(i, override = null)
 {
-    if (selections[i].status == "winner")
+    let array = [];
+    if (override == null)
+    {
+        array = [...selections];
+    }
+    else
+    {
+        array = [...override];
+    }
+
+    if (array[i].status == "winner")
     {
         let returns = 0;
 
-        var r = ((selections[i].numerator / selections[i].denominator) * unitStake) + unitStake;
+        var r = ((array[i].numerator / array[i].denominator) * unitStake) + unitStake;
         returns = returns + r;
 
         return returns;
@@ -298,54 +308,37 @@ function singleBet(i)
 function doubleBet(override = null)
 {
     let returns = 0;
+    let array = [];
 
     if (override == null)
     {
-        var results = [];
-
-        for (let i = 0; i < selections.length; i++) {
-            for (let j = i + 1; j < selections.length; j++) {
-
-                if (selections[i].status == "loser" || selections[j].status == "loser")
-                {
-                    continue;
-                }
-
-                var a = (selections[i].numerator / selections[i].denominator) + 1;
-                var b = (selections[j].numerator / selections[j].denominator) + 1;
-
-                results.push(a * b);
-            }
-        }
-
-        for (let k = 0; k < results.length; k++)
-        {
-            returns += results[k] * unitStake;
-        }
+        array = [...selections];
     }
     else
     {
-        var results = [];
+        array = [...override];
+    }
 
-        for (let i = 0; i < override.length; i++) {
-            for (let j = i + 1; j < override.length; j++) {
+    var results = [];
 
-                if (override[i].status == "loser" || override[j].status == "loser")
-                {
-                    continue;
-                }
+    for (let i = 0; i < array.length; i++) {
+        for (let j = i + 1; j < array.length; j++) {
 
-                var a = (override[i].numerator / override[i].denominator) + 1;
-                var b = (override[j].numerator / override[j].denominator) + 1;
-
-                results.push(a * b);
+            if (array[i].status == "loser" || array[j].status == "loser")
+            {
+                continue;
             }
-        }
 
-        for (let k = 0; k < results.length; k++)
-        {
-            returns += results[k] * unitStake;
+            var a = (array[i].numerator / array[i].denominator) + 1;
+            var b = (array[j].numerator / array[j].denominator) + 1;
+
+            results.push(a * b);
         }
+    }
+
+    for (let k = 0; k < results.length; k++)
+    {
+        returns += results[k] * unitStake;
     }
 
     return returns;
@@ -364,60 +357,40 @@ function doubleBet(override = null)
 function trebleBet(override = null)
 {
     let returns = 0;
+    let array = [];
 
     if (override == null)
     {
-        var results = [];
-
-        for (let i = 0; i < selections.length; i++) {
-            for (let j = i + 1; j < selections.length; j++) {
-                for (let k = j + 1; k < selections.length; k++)
-                {
-                    if (selections[i].status == "loser" || selections[j].status == "loser" || selections[k].status == "loser")
-                    {
-                        continue;
-                    }
-
-                    var a = (selections[i].numerator / selections[i].denominator) + 1;
-                    var b = (selections[j].numerator / selections[j].denominator) + 1;
-                    var c = (selections[k].numerator / selections[k].denominator) + 1;
-
-                    results.push(a * b * c);
-                }
-            }
-        }
-
-        for (let count = 0; count < results.length; count++)
-        {
-            returns += results[count] * unitStake;
-        }
+        array = [...selections];
     }
     else
     {
-        var results = [];
+        array = [...override];
+    }
 
-        for (let i = 0; i < override.length; i++) {
-            for (let j = i + 1; j < override.length; j++) {
-                for (let k = j + 1; k < override.length; k++)
+    var results = [];
+
+    for (let i = 0; i < array.length; i++) {
+        for (let j = i + 1; j < array.length; j++) {
+            for (let k = j + 1; k < array.length; k++)
+            {
+                if (array[i].status == "loser" || array[j].status == "loser" || array[k].status == "loser")
                 {
-                    if (override[i].status == "loser" || override[j].status == "loser" || override[k].status == "loser")
-                    {
-                        continue;
-                    }
-
-                    var a = (override[i].numerator / override[i].denominator) + 1;
-                    var b = (override[j].numerator / override[j].denominator) + 1;
-                    var c = (override[k].numerator / override[k].denominator) + 1;
-
-                    results.push(a * b * c);
+                    continue;
                 }
+
+                var a = (array[i].numerator / array[i].denominator) + 1;
+                var b = (array[j].numerator / array[j].denominator) + 1;
+                var c = (array[k].numerator / array[k].denominator) + 1;
+
+                results.push(a * b * c);
             }
         }
+    }
 
-        for (let count = 0; count < results.length; count++)
-        {
-            returns += results[count] * unitStake;
-        }
+    for (let count = 0; count < results.length; count++)
+    {
+        returns += results[count] * unitStake;
     }
 
     return returns;
@@ -437,30 +410,25 @@ function accBet(override = null)
 {
     let returns = 0;
     let totalOdds = 1;
+    let array = [];
 
     if (override == null)
     {
-        for (let i = 0; i < numSelections.value; i++)
-        {
-            totalOdds *= ((selections[i].numerator / selections[i].denominator) + 1);
-            if (selections[i].status == "loser")
-            {
-                totalOdds = 0;
-                break;
-            }
-        }
+        array = [...selections];
     }
     else
     {
-        for (let i = 0; i < override.length; i++)
+        array = [...override];
+    }
+
+    for (let i = 0; i < array.length; i++)
+    {
+        totalOdds *= ((array[i].numerator / array[i].denominator) + 1);
+        if (array[i].status == "loser")
         {
-            totalOdds *= ((override[i].numerator / override[i].denominator) + 1);
-            if (override[i].status == "loser")
-            {
-                totalOdds = 0;
-                break;
-            }
-        }   
+            totalOdds = 0;
+            break;
+        }
     }
 
     returns = totalOdds * unitStake;
@@ -499,7 +467,14 @@ function nFold(n, override = null)
             let totalOdds = 1;
 
             for (let idx of combo) {
-                totalOdds *= ((array[idx].numerator / array[idx].denominator) + 1);
+                if (array[idx].status == "loser")
+                {
+                    return;
+                }
+                else
+                {
+                    totalOdds *= ((array[idx].numerator / array[idx].denominator) + 1);
+                }
             }
 
             total += totalOdds * unitStake;
@@ -537,11 +512,9 @@ function patentBet(override = null)
     }
     else
     {
-        let num = Number(selections.length);
-
         for (let i = 0; i < 3; i++)
         {
-            returns += singleBet(i);
+            returns += singleBet(i, override);
         }
 
         returns += doubleBet(override);
@@ -558,7 +531,6 @@ function yankeeBet(override = null)
 
     if (override == null)
     {
-
         returns += doubleBet();
         returns += trebleBet();
         returns += accBet();
@@ -797,11 +769,15 @@ function calculate()
             let send = [];
 
             total += patentBet(selections.slice(0,3));
+            console.log(total);
             total += patentBet(selections.slice(3,6));
+            console.log(total);
         
             total += yankeeBet(selections.slice(1,5));
+            console.log(total);
 
             total += accBet();
+            console.log(total);
 
             let count = 0;
 
@@ -847,7 +823,35 @@ function calculate()
 
         if (contains(selectedBets, 'pontoon'))
         {
+            const num = Number(selections.length);
 
+            for (let i = 0; i < num; i++)
+            {
+                total += singleBet(i);
+            }
+            console.log(total);
+
+            let send = [];
+
+            total += doubleBet(selections.slice(0,2));
+            total += doubleBet(selections.slice(1,3));
+            total += doubleBet(selections.slice(2,4));
+            total += doubleBet(selections.slice(3,5));
+            total += doubleBet(selections.slice(4,6));
+
+            total += trebleBet(selections.slice(0,3));
+            total += trebleBet(selections.slice(1,4));
+            total += trebleBet(selections.slice(2,5));
+            total += trebleBet(selections.slice(3,6));
+
+            total += nFold(4, selections.slice(0,4));
+            total += nFold(4, selections.slice(1,5));
+            total += nFold(4, selections.slice(2,6));
+
+            total += nFold(5, selections.slice(0,5));
+            total += nFold(5, selections.slice(1,6));
+
+            total += accBet();
         }
 
         if (contains(selectedBets, 'mag7'))
