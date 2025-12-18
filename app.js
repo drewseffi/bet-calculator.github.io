@@ -473,9 +473,19 @@ function accBet(override = null)
  * @param {*} n - Size of the accumulator you want to calculate
  * @returns 
  */
-function nFold(n)
+function nFold(n, override = null)
 {
     let total = 0;
+    let array = [];
+
+    if (override == null)
+    {
+        array = [...selections];
+    }
+    else
+    {
+        array = [...override];
+    }
 
     /**
      * Recursion helper function
@@ -489,7 +499,7 @@ function nFold(n)
             let totalOdds = 1;
 
             for (let idx of combo) {
-                totalOdds *= ((selections[idx].numerator / selections[idx].denominator) + 1);
+                totalOdds *= ((array[idx].numerator / array[idx].denominator) + 1);
             }
 
             total += totalOdds * unitStake;
@@ -497,7 +507,7 @@ function nFold(n)
         }
 
         // Pick the next selections to iterate over
-        for (let i = startIndex; i < selections.length; i++) {
+        for (let i = startIndex; i < array.length; i++) {
             combo.push(i);
             build(i + 1, combo);
             combo.pop();
@@ -785,24 +795,11 @@ function calculate()
         if (contains(selectedBets, 'alphabet'))
         {
             let send = [];
-            send[0] = selections[0];
-            send[1] = selections[1];
-            send[2] = selections[2];
 
-            total += patentBet(send);
-
-            send[0] = selections[3];
-            send[1] = selections[4];
-            send[2] = selections[5];
-
-            total += patentBet(send);
-
-            send[0] = selections[1];
-            send[1] = selections[2];
-            send[2] = selections[3];
-            send[3] = selections[5];
-
-            total += yankeeBet(send);
+            total += patentBet(selections.slice(0,3));
+            total += patentBet(selections.slice(3,6));
+        
+            total += yankeeBet(selections.slice(1,5));
 
             total += accBet();
 
@@ -810,7 +807,7 @@ function calculate()
 
             for (let i = 0; i < selections.length; i++)
             {
-                if (selections[i].status == "win")
+                if (selections[i].status == "winner")
                 {
                     count++;
                 }
@@ -824,7 +821,28 @@ function calculate()
 
         if (contains(selectedBets, 'fivespot'))
         {
+            const num = Number(selections.length);
 
+            for (let i = 0; i < num; i++)
+            {
+                total += singleBet(i);
+            }
+
+            let send = [];
+
+            total += doubleBet(selections.slice(0,2));
+            total += doubleBet(selections.slice(1,3));
+            total += doubleBet(selections.slice(2,4));
+            total += doubleBet(selections.slice(3,5));
+
+            total += trebleBet(selections.slice(0,3));
+            total += trebleBet(selections.slice(1,4));
+            total += trebleBet(selections.slice(2,5));
+
+            total += nFold(4, selections.slice(0,4));
+            total += nFold(4, selections.slice(1,5));
+
+            total += accBet();
         }
 
         if (contains(selectedBets, 'pontoon'))
