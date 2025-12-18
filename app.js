@@ -829,7 +829,6 @@ function calculate()
             {
                 total += singleBet(i);
             }
-            console.log(total);
 
             let send = [];
 
@@ -856,7 +855,41 @@ function calculate()
 
         if (contains(selectedBets, 'mag7'))
         {
+            const num = Number(selections.length);
 
+            for (let i = 0; i < num; i++)
+            {
+                total += singleBet(i);
+            }
+
+            let send = [];
+
+            total += doubleBet(selections.slice(0,2));
+            total += doubleBet(selections.slice(1,3));
+            total += doubleBet(selections.slice(2,4));
+            total += doubleBet(selections.slice(3,5));
+            total += doubleBet(selections.slice(4,6));
+            total += doubleBet(selections.slice(5,7));
+
+            total += trebleBet(selections.slice(0,3));
+            total += trebleBet(selections.slice(1,4));
+            total += trebleBet(selections.slice(2,5));
+            total += trebleBet(selections.slice(3,6));
+            total += trebleBet(selections.slice(4,7));
+
+            total += nFold(4, selections.slice(0,4));
+            total += nFold(4, selections.slice(1,5));
+            total += nFold(4, selections.slice(2,6));
+            total += nFold(4, selections.slice(3,7));
+
+            total += nFold(5, selections.slice(0,5));
+            total += nFold(5, selections.slice(1,6));
+            total += nFold(5, selections.slice(2,7));
+
+            total += nFold(6, selections.slice(0,6));
+            total += nFold(6, selections.slice(1,7));
+
+            total += accBet();
         }
 
         if (selectedBets.length > 0)
