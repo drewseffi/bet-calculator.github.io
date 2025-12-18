@@ -16,13 +16,11 @@ I want this website to work with pure HTML, CSS and JavaScript. As I am new to w
 - [x] Dynamic bet type highlighting
 - [x] Stake entering
 - [x] Total stake calulation
-- [ ] Returns calculations for win only bets
+- [x] Returns calculations for win only bets
 - [ ] Returns calculations for each way bets
 - [ ] Ability to select non-runners
-- [ ] Returns calculations for forecasts
-- [ ] Returns calculations for reverse forecasts
+- [ ] Add non-runner returns back to total returns
 - [ ] Rule 4 calulations
-- [ ] Returns calculations for tricasts
 
 ## References
 I was using a few different web based bet calculators to get some inspiration how I wanted my website to look and to function. They are here below to see what else other people have been making.
