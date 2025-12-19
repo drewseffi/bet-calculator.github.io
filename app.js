@@ -289,6 +289,10 @@ function singleBet(i, override = null)
 
         return returns;
     }
+    else if (array[i].status == "non-runner")
+    {
+        return unitStake;
+    }
     else 
     {
         return 0;
