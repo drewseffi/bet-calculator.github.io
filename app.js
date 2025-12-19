@@ -328,11 +328,27 @@ function doubleBet(override = null)
             {
                 continue;
             }
+            else if (array[i].status == "non-runner" || array[j].status == "non-runner")
+            {
+                let tempArray = [];
+                if (array[i].status == "non-runner")
+                {
+                    tempArray.push(array[j]);
+                }
+                else
+                {
+                    tempArray.push(array[i]);
+                }
 
-            var a = (array[i].numerator / array[i].denominator) + 1;
-            var b = (array[j].numerator / array[j].denominator) + 1;
+                returns += nFold(1, tempArray);
+            }
+            else
+            {
+                var a = (array[i].numerator / array[i].denominator) + 1;
+                var b = (array[j].numerator / array[j].denominator) + 1;
 
-            results.push(a * b);
+                results.push(a * b);
+            }
         }
     }
 
@@ -381,7 +397,6 @@ function trebleBet(override = null)
                 else if (array[i].status == "non-runner" || array[j].status == "non-runner" || array[k].status == "non-runner")
                 {
                     let tempArray = [array[i], array[j], array[k]];
-                    console.log("non");
 
                     for (let z = 0; z < tempArray.length; z++)
                     {
