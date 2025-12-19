@@ -378,12 +378,31 @@ function trebleBet(override = null)
                 {
                     continue;
                 }
+                else if (array[i].status == "non-runner" || array[j].status == "non-runner" || array[k].status == "non-runner")
+                {
+                    let tempArray = [array[i], array[j], array[k]];
+                    console.log("non");
 
-                var a = (array[i].numerator / array[i].denominator) + 1;
-                var b = (array[j].numerator / array[j].denominator) + 1;
-                var c = (array[k].numerator / array[k].denominator) + 1;
+                    for (let z = 0; z < tempArray.length; z++)
+                    {
+                        if (tempArray[z].status == "non-runner")
+                        {
+                            tempArray = tempArray.filter(x => x.status !== "non-runner");
 
-                results.push(a * b * c);
+                            returns += nFold(tempArray.length, tempArray);
+                        }
+                    }
+                }
+                else
+                {
+                    var a = (array[i].numerator / array[i].denominator) + 1;
+                    var b = (array[j].numerator / array[j].denominator) + 1;
+                    var c = (array[k].numerator / array[k].denominator) + 1;
+
+                    results.push(a * b * c);   
+                }
+
+
             }
         }
     }
@@ -423,15 +442,22 @@ function accBet(override = null)
 
     for (let i = 0; i < array.length; i++)
     {
-        totalOdds *= ((array[i].numerator / array[i].denominator) + 1);
-        if (array[i].status == "loser")
+        if (array[i].status == "winner")
+        {
+            totalOdds *= ((array[i].numerator / array[i].denominator) + 1);
+        }
+        else if (array[i].status == "non-runner")
+        {
+            //Needs fixed
+        }
+        else if (array[i].status == "loser")
         {
             totalOdds = 0;
             break;
         }
     }
 
-    returns = totalOdds * unitStake;
+    returns += totalOdds * unitStake;
     return returns;
 }
 
@@ -473,7 +499,14 @@ function nFold(n, override = null)
                 }
                 else
                 {
-                    totalOdds *= ((array[idx].numerator / array[idx].denominator) + 1);
+                    if (array[idx].status == "winner")
+                    {
+                        totalOdds *= ((array[idx].numerator / array[idx].denominator) + 1);
+                    }
+                    else if (array[idx].status == "non-runner")
+                    {
+                        total += unitStake;
+                    }
                 }
             }
 
@@ -951,6 +984,12 @@ function getAllOdds()
 
             selections.push({id: i, numerator: Number(inputs[0].value), denominator: Number(inputs[1].value), status: "loser"})
         }
+        else if (row.classList.contains('non-runner'))
+        {
+            var inputs = row.querySelectorAll('input.odds');
+
+            selections.push({id: i, numerator: Number(inputs[0].value), denominator: Number(inputs[1].value), status: "non-runner"})
+        }
     })
 }
 
@@ -997,4 +1036,16 @@ function makeLoser(text)
     c.classList.add('loser');
 
     text.closest('.dropdown').querySelector('.dropdown-label').textContent = "Lost";
+}
+
+// Makes selection a non-runner and adds non-runner class
+function makeNR(text)
+{
+    var c = text.closest('.selection-details');
+
+    clearOutcome(c);
+
+    c.classList.add('non-runner');
+
+    text.closest('.dropdown').querySelector('.dropdown-label').textContent = "N/R";
 }
