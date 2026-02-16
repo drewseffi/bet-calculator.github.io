@@ -28,15 +28,6 @@ function valueChange()
 function updateStake(field)
 {
     unitStake = parseInt(field.value);
-    updateTotalStake();
-}
-
-function updateTotalStake()
-{
-    //const totalStakeDisplay = document.getElementById('totalStake');
-
-    //totalStake = unitStake * numSelections.value;
-    //totalStakeDisplay.textContent = "Total stake: " + totalStake;
 }
 
 /**
@@ -124,7 +115,6 @@ function addSelection()
         valueChange();
     }
 
-    updateTotalStake();
     betDetails();
 }
 
@@ -137,7 +127,6 @@ function removeSelection(button)
         button.parentElement.remove();
     }
 
-    updateTotalStake();
     updateBoxes();
     betDetails();
 }
@@ -287,10 +276,12 @@ function singleBet(i, override = null)
         var r = ((array[i].numerator / array[i].denominator) * unitStake) + unitStake;
         returns = returns + r;
 
+        totalStake += unitStake;
         return returns;
     }
     else if (array[i].status == "non-runner")
     {
+        totalStake += unitStake;
         return unitStake;
     }
     else 
@@ -361,6 +352,7 @@ function doubleBet(override = null)
         returns += results[k] * unitStake;
     }
 
+    totalStake += unitStake * results.length;
     return returns;
 }
 
@@ -429,6 +421,7 @@ function trebleBet(override = null)
     for (let count = 0; count < results.length; count++)
     {
         returns += results[count] * unitStake;
+        totalStake += unitStake;
     }
 
     return returns;
@@ -477,6 +470,7 @@ function accBet(override = null)
     }
 
     returns += totalOdds * unitStake;
+    totalStake += unitStake;
     return returns;
 }
 
@@ -529,6 +523,7 @@ function nFold(n, override = null)
                 }
             }
 
+            totalStake += unitStake;
             total += totalOdds * unitStake;
             return;
         }
@@ -611,6 +606,7 @@ function calculate()
     if (selectedBets.length > 0)
     {
         let total = 0;
+        totalStake = 0;
         selections = [];
         getAllOdds();
 
@@ -954,10 +950,9 @@ function calculate()
                 total = 0;
             }
 
-            //total = total.toFixed(2);
-
             returnText.textContent = "Total returns: " + total;
 
+            console.log(totalStake);
             let profit = total - totalStake;
             profitText.textContent = "Total profit: " + profit;
         }
